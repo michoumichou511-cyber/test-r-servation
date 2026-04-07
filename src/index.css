@@ -1,0 +1,338 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Évite l’écran blanc au démarrage, pendant les transitions ou si React se démonte */
+html {
+  background-color: transparent;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-color: #F4F6FA;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+/* Scrollbar personnalisée (style app) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+:not(.dark) ::-webkit-scrollbar-track {
+  background: #F4F6FA;
+}
+:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+}
+:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #00A650;
+}
+
+/* Sélection (style app) */
+::selection {
+  background: rgba(0, 166, 80, 0.3);
+  color: inherit;
+}
+
+/* Gradient border animé (style app) */
+@keyframes at-gradient-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.at-gradient-border {
+  background: linear-gradient(90deg, #00A650, #003DA5, #00A650);
+  background-size: 300% 300%;
+  animation: at-gradient-border 3s ease infinite;
+}
+
+/* Pulse glow (style app) */
+@keyframes at-pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 166, 80, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(0, 166, 80, 0.6); }
+}
+.at-pulse-glow {
+  animation: at-pulse-glow 2s ease-in-out infinite;
+}
+
+/* Float (style app) */
+@keyframes at-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.at-float {
+  animation: at-float 3s ease-in-out infinite;
+}
+
+/* Shimmer (style app) */
+@keyframes at-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.at-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: at-shimmer 2s infinite;
+}
+
+/* Card lift (style app) */
+.at-card-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.at-card-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Cartes AT : même surface que at-card-surface + lift au survol */
+.at-card {
+  @apply rounded-[20px] border border-[#EAECF0] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+}
+
+.dark .at-card {
+  @apply border-[#2A2D3E] bg-[#1A1D2E];
+}
+
+.dark {
+  color-scheme: dark;
+  --input-bg: #1E2235;
+}
+
+.dark body {
+  background-color: #0b1220 !important;
+}
+
+.dark aside {
+  background-color: #1A1D2E !important;
+  border-right-color: #2A2D3E !important;
+}
+
+.dark header,
+.dark nav[class*="bg-white"] {
+  background-color: #1A1D2E !important;
+  border-bottom-color: #2A2D3E !important;
+}
+
+.dark #root {
+  background-color: transparent;
+}
+
+/* Shimmer barre budget (Dashboard) */
+@keyframes at-shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.at-budget-shimmer {
+  animation: at-shimmer-slide 2.2s ease-in-out infinite;
+}
+
+/* @media (prefers-reduced-motion: reduce) {
+  .at-budget-shimmer {
+    animation: none;
+  }
+} */
+
+/* Particules dashboard (léger flottement) */
+@keyframes at-particle-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(10px, -14px);
+    opacity: 0.7;
+  }
+}
+
+.at-particle-float {
+  animation: at-particle-float 5s ease-in-out infinite;
+}
+
+/* @media (prefers-reduced-motion: reduce) {
+  .at-particle-float {
+    animation: none;
+    opacity: 0.2;
+  }
+} */
+
+/* ─── Design system AT Réservations (aligné Dashboard) ─── */
+.at-gradient-title {
+  background: linear-gradient(135deg, #003da5, #00a650);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.at-card-surface {
+  @apply rounded-[20px] border border-[#EAECF0] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200;
+}
+
+.dark .at-card-surface {
+  @apply border-[#2A2D3E] bg-[#1A1D2E];
+}
+
+.at-btn-gradient {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200;
+  background: linear-gradient(135deg, #003da5, #00a650);
+}
+
+.at-btn-gradient:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 61, 165, 0.25);
+}
+
+.at-btn-gradient:disabled {
+  @apply cursor-not-allowed opacity-60;
+}
+
+.at-btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#00A650] bg-transparent px-5 py-2.5 text-sm font-semibold text-[#00A650] transition-all duration-200;
+}
+
+.at-btn-secondary:hover:not(:disabled) {
+  @apply bg-[#E6F7EE] dark:bg-[#00A650]/15;
+}
+
+.at-input {
+  @apply w-full rounded-xl border-2 border-[#EAECF0] bg-white px-3 py-3 text-sm text-[#1A1D26] outline-none transition-colors;
+}
+
+.at-input:focus {
+  @apply border-[#00A650] ring-0;
+}
+
+.dark .at-input {
+  @apply border-[#2A2D3E] bg-[#1E2235] text-[#E8EAF0];
+}
+
+.at-table-head {
+  @apply bg-[#F8F9FC] text-left text-xs font-semibold uppercase tracking-wide text-[#5A6070] dark:bg-[#252840] dark:text-[#9AA0AE];
+}
+
+.at-table-row {
+  @apply border-b border-[#EAECF0] transition-colors dark:border-[#2A2D3E];
+}
+
+.at-table-row:hover {
+  @apply bg-[#F0FDF4] dark:bg-[#1E2235];
+}
+
+.at-stagger-item {
+  @apply opacity-0;
+}
+
+/* Carte liste / hover lift */
+.at-hover-lift {
+  @apply transition-all duration-200;
+}
+
+.at-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.dark .at-hover-lift:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Responsive mobile (AT Réservations) ─── */
+@media (max-width: 768px) {
+  .at-card-surface {
+    border-radius: 12px !important;
+    padding: 14px 12px !important;
+  }
+
+  .at-gradient-title {
+    font-size: 18px !important;
+  }
+
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grid-cols-4-kpi {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  table td,
+  table th {
+    font-size: 11px !important;
+    padding: 8px 6px !important;
+  }
+
+  .sidebar-mobile {
+    position: fixed !important;
+    z-index: 50 !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-mobile.open {
+    transform: translateX(0);
+  }
+
+  .btn-mobile-full {
+    width: 100% !important;
+  }
+
+  main {
+    padding: 12px !important;
+  }
+
+  .floating-bubble:nth-child(n + 5) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .at-gradient-title {
+    font-size: 16px !important;
+  }
+
+  .at-card-surface {
+    padding: 10px 10px !important;
+  }
+
+  .grid-cols-4-kpi {
+    grid-template-columns: 1fr !important;
+  }
+}
