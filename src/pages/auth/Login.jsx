@@ -740,6 +740,12 @@ export default function Login() {
     <LazyMotion features={domAnimation}>
     <>
       {themeToggle}
+      {/* Fond particules (desktop) : visible derrière toute la page login */}
+      {!isMobile && (
+        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+          <ParticleBackground isDarkMode={!!darkMode} zIndex={0} opacity={0.9} />
+        </div>
+      )}
       <div
         style={{
           display: 'flex',
@@ -747,6 +753,7 @@ export default function Login() {
           overflow: 'hidden',
           fontFamily: 'IBM Plex Sans, sans-serif',
         }}
+        className="relative"
       >
       {/* ═══ GAUCHE ═══ */}
       <div
@@ -762,9 +769,6 @@ export default function Login() {
         }}
         className="hidden md:flex overflow-hidden relative"
       >
-        {!reducedMotion && (
-          <ParticleBackground isDarkMode={!!darkMode} zIndex={2} opacity={0.9} />
-        )}
         <video
           autoPlay
           muted
