@@ -744,7 +744,7 @@ export default function Login() {
       {/* Fond particules (desktop) : visible derrière toute la page login */}
       {!isMobile && (
         <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-          <AuthAnimatedBackground dark={!!darkMode} zIndex={0} opacity={1} />
+          <AuthAnimatedBackground dark={!!darkMode} zIndex={0} opacity={1} density={1.8} />
         </div>
       )}
       <div

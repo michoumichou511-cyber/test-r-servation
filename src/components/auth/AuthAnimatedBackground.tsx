@@ -27,10 +27,12 @@ export default function AuthAnimatedBackground({
   dark,
   zIndex = 0,
   opacity = 1,
+  density = 1,
 }: {
   dark: boolean;
   zIndex?: number;
   opacity?: number;
+  density?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const darkRef = useRef(dark);
@@ -52,12 +54,17 @@ export default function AuthAnimatedBackground({
     resize();
     window.addEventListener("resize", resize);
 
-    const particles = Array.from({ length: 60 }, () => ({
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const particleCount = Math.max(80, Math.floor(120 * density));
+    const linkDist = 170;
+    const linkDistSq = linkDist * linkDist;
+
+    const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r: 2 + Math.random() * 4,
+      vx: (Math.random() - 0.5) * (0.18 + 0.12 * density),
+      vy: (Math.random() - 0.5) * (0.18 + 0.12 * density),
+      r: 1.2 + Math.random() * (2.2 + 1.2 * density),
       colorIndex: Math.random() > 0.5 ? 0 : 1,
     }));
 
@@ -92,7 +99,7 @@ export default function AuthAnimatedBackground({
         const c = colors.particleColors[p.colorIndex];
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},1)`;
+        ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},0.95)`;
         ctx.fill();
       });
 
@@ -100,20 +107,21 @@ export default function AuthAnimatedBackground({
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
-            const alpha = (1 - dist / 150) * 0.5;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < linkDistSq) {
+            const dist = Math.sqrt(distSq);
+            const alpha = (1 - dist / linkDist) * (0.22 + 0.18 * density);
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle = colors.connectionColor(alpha);
-            ctx.lineWidth = 0.6;
+            ctx.lineWidth = 0.55 * dpr;
             ctx.stroke();
           }
         }
       }
 
-      t += 0.025;
+      t += 0.018;
       animId = requestAnimationFrame(draw);
     }
 
