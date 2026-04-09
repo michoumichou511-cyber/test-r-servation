@@ -4,6 +4,7 @@ import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import { Eye, EyeOff, Loader2, Sun, Moon } from 'lucide-react'
+import ParticleBackground from '../../components/Dashboard/ParticleBackground'
 
 const MOBILE_MQ = '(max-width: 767px)'
 
@@ -658,16 +659,16 @@ export default function Login() {
       navigate('/')
     } catch (err) {
       if (!err.response) {
-        const apiBase =
-          import.meta.env.VITE_API_URL || 'https://backend-production-170c.up.railway.app/api'
-        const apiLooksLocal = /localhost|127\.0\.0\.1/.test(apiBase)
+        const apiBase = import.meta.env.VITE_API_URL
+        const apiLooksLocal = /localhost|127\.0\.0\.1/.test(apiBase || '')
         if (import.meta.env.PROD && apiLooksLocal) {
           setError(
-            'Déploiement : définissez VITE_API_URL sur Vercel (URL Railway + /api), redéployez, et FRONTEND_URL côté Railway pour le CORS. Voir frontend/README.md.',
+            'Configuration invalide : VITE_API_URL pointe vers une URL locale en production. ' +
+              'Définissez VITE_API_URL avec l’URL publique du backend (incluant /api), puis rebuild/redeploy le frontend.',
           )
         } else {
           setError(
-            'Serveur injoignable. Lancez l’API : `php artisan serve` (port 8000) et vérifiez l’URL dans api.js.',
+            'Serveur injoignable. Lancez le backend (ex: `php artisan serve` port 8000) et vérifiez VITE_API_URL.',
           )
         }
       } else {
@@ -761,6 +762,9 @@ export default function Login() {
         }}
         className="hidden md:flex overflow-hidden relative"
       >
+        {!reducedMotion && (
+          <ParticleBackground isDarkMode={!!darkMode} />
+        )}
         <video
           autoPlay
           muted
