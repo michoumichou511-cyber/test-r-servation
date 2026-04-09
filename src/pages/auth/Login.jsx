@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import { Eye, EyeOff, Loader2, Sun, Moon } from 'lucide-react'
 import ParticleBackground from '../../components/Dashboard/ParticleBackground'
+import AuthAnimatedBackground from '../../components/auth/AuthAnimatedBackground'
 
 const MOBILE_MQ = '(max-width: 767px)'
 
@@ -743,7 +744,7 @@ export default function Login() {
       {/* Fond particules (desktop) : visible derrière toute la page login */}
       {!isMobile && (
         <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-          <ParticleBackground isDarkMode={!!darkMode} zIndex={0} opacity={0.9} />
+          <AuthAnimatedBackground dark={!!darkMode} zIndex={0} opacity={1} />
         </div>
       )}
       <div
