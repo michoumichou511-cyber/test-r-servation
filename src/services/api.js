@@ -14,6 +14,8 @@ function requiredEnv(name) {
 const api = axios.create({
   baseURL: requiredEnv('VITE_API_URL'),
   headers: { 'Content-Type': 'application/json' },
+  // Évite un blocage infini si le backend ne répond pas (ex: API down / DNS / réseau)
+  timeout: 10000,
 })
 
 api.interceptors.request.use((config) => {
