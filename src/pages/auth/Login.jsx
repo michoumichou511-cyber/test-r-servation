@@ -754,6 +754,7 @@ export default function Login() {
           height: '100vh',
           overflow: 'hidden',
           fontFamily: 'IBM Plex Sans, sans-serif',
+          background: darkMode ? '#0b1220' : '#f8faff',
         }}
         className="relative"
       >
@@ -1002,7 +1003,7 @@ export default function Login() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          background: darkMode ? '#0b1220' : '#ffffff',
+          background: 'transparent',
         }}
       >
         <m.div
