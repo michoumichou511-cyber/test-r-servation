@@ -719,6 +719,7 @@ export default function Login() {
       <LazyMotion features={domAnimation}>
         <>
         {themeToggle}
+        <AuthAnimatedBackground dark={!!darkMode} zIndex={0} opacity={1} density={1.8} />
         <LoginMobileAnimated
           email={email}
           setEmail={setEmail}
