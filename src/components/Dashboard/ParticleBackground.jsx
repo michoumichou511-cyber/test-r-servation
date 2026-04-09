@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 
 /** Fond réseau de particules (même principe que le dossier app/) — couleurs AT. */
-export default function ParticleBackground({ isDarkMode }) {
+export default function ParticleBackground({ isDarkMode, zIndex = 2, opacity = 1 }) {
   const canvasRef = useRef(null)
 
   useEffect(() => {
@@ -95,12 +95,15 @@ export default function ParticleBackground({ isDarkMode }) {
     <>
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-0 h-full min-h-[480px] w-full"
+        className="pointer-events-none absolute inset-0 h-full min-h-[480px] w-full"
+        style={{ zIndex, opacity }}
         aria-hidden
       />
       <motion.div
-        className="pointer-events-none absolute left-1/4 top-1/4 z-0 h-96 w-96 rounded-full"
+        className="pointer-events-none absolute left-1/4 top-1/4 h-96 w-96 rounded-full"
         style={{
+          zIndex,
+          opacity,
           background: isDarkMode
             ? 'radial-gradient(circle, rgba(0,61,165,0.18) 0%, transparent 70%)'
             : 'radial-gradient(circle, rgba(0,61,165,0.08) 0%, transparent 70%)',
@@ -117,8 +120,10 @@ export default function ParticleBackground({ isDarkMode }) {
         }}
       />
       <motion.div
-        className="pointer-events-none absolute bottom-1/4 right-1/4 z-0 h-96 w-96 rounded-full"
+        className="pointer-events-none absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full"
         style={{
+          zIndex,
+          opacity,
           background: isDarkMode
             ? 'radial-gradient(circle, rgba(0,166,80,0.14) 0%, transparent 70%)'
             : 'radial-gradient(circle, rgba(0,166,80,0.07) 0%, transparent 70%)',

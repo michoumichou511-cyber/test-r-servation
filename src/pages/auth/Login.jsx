@@ -763,7 +763,7 @@ export default function Login() {
         className="hidden md:flex overflow-hidden relative"
       >
         {!reducedMotion && (
-          <ParticleBackground isDarkMode={!!darkMode} />
+          <ParticleBackground isDarkMode={!!darkMode} zIndex={2} opacity={0.9} />
         )}
         <video
           autoPlay
