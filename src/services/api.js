@@ -1,11 +1,18 @@
 import axios from 'axios'
 
-/** Base API : Railway par défaut si VITE_API_URL n’est pas défini. */
-const defaultBaseURL = import.meta.env.VITE_API_URL
-  ?? 'https://backend-production-170c.up.railway.app/api'
+function requiredEnv(name) {
+  const v = import.meta.env?.[name]
+  if (!v) {
+    throw new Error(
+      `[config] Variable manquante: ${name}. ` +
+      `Créez un fichier .env à partir de .env.example et définissez ${name} (ex: http://127.0.0.1:8000/api).`
+    )
+  }
+  return v
+}
 
 const api = axios.create({
-  baseURL: defaultBaseURL,
+  baseURL: requiredEnv('VITE_API_URL'),
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -255,41 +262,33 @@ export const adminAPI = {
         { params }),
   },
 
-  utilisateurs: (params) => api.get('/admin/utilisateurs', { params }),
-  toggleActif: (id) => api.put(`/admin/utilisateurs/${id}/toggle-active`),
-  changerRole: (id, data) => api.put(`/admin/utilisateurs/${id}/role`, data),
-  // TODO: le backend n’expose pas POST /api/admin/utilisateurs — création utilisateur via authAPI.register
-  creerUtilisateur: (data) => api.post('/admin/utilisateurs', data),
-  modifierUtilisateur: (id, data) => api.put(`/admin/utilisateurs/${id}`, data),
-  supprimerUtilisateur: (id) => api.delete(`/admin/utilisateurs/${id}`),
+  // Aliases de compatibilité (évite la duplication réelle des endpoints)
+  utilisateurs:  (params) => adminAPI.users.list(params),
+  toggleActif:   (id) => adminAPI.users.toggleActive(id),
+  changerRole:   (id, data) => adminAPI.users.update(id, data),
+  creerUtilisateur: (data) => adminAPI.users.create(data),
+  modifierUtilisateur: (id, data) => adminAPI.users.update(id, data),
+  supprimerUtilisateur: (id) => adminAPI.users.delete(id),
 
-  prestataires: (params) => api.get('/prestataires', { params }),
-  creerPrestataire: (data) => api.post('/admin/prestataires', data),
-  modifierPrestataire: (id, data) => api.put(`/admin/prestataires/${id}`, data),
-  supprimerPrestataire: (id) => api.delete(`/admin/prestataires/${id}`),
-  toggleFavori: (id) => api.post(`/prestataires/${id}/favori`, {}),
+  prestataires: (params) => adminAPI.prestatairesCrud.list(params),
+  creerPrestataire: (data) => adminAPI.prestatairesCrud.create(data),
+  modifierPrestataire: (id, data) => adminAPI.prestatairesCrud.update(id, data),
+  supprimerPrestataire: (id) => adminAPI.prestatairesCrud.delete(id),
+  toggleFavori: (id) => adminAPI.prestatairesCrud.toggleFavori(id),
 
-  budgets: (params) => api.get('/admin/budgets', { params }),
-  modifierBudget: (id, data) => api.put(`/admin/budgets/${id}`, data),
+  budgets: (params) => adminAPI.budgetsCrud.list(params),
+  modifierBudget: (id, data) => adminAPI.budgetsCrud.update(id, data),
 
-  auditLogs: (params) => api.get('/admin/audit-logs', { params }),
+  auditLogs: (params) => adminAPI.auditLogsList.list(params),
 }
 
 // ── Rapports / Export (routes backend réelles sous /export/...) ─────────────────
 export const exportAPI = {
-  // TODO: pas de routes GET /api/rapports/* dans le backend — préférer missionsExcel / missionsPdf / depensesExcel / prestatairesExcel
-  missions: (params) =>
-    api.get('/rapports/missions', {
-      params, responseType: 'blob' }),
-  budgets: (params) =>
-    api.get('/rapports/budgets', {
-      params, responseType: 'blob' }),
-  prestataires: (params) =>
-    api.get('/rapports/prestataires', {
-      params, responseType: 'blob' }),
-  auditLogs: (params) =>
-    api.get('/rapports/audit-logs', {
-      params, responseType: 'blob' }),
+  // Routes /rapports/* : non définies dans le backend actuel → erreur explicite au lieu d'un 404 silencieux
+  missions: () => Promise.reject(new Error('Export missions: route /rapports/missions indisponible. Utilisez missionsExcel ou missionsPdf.')),
+  budgets: () => Promise.reject(new Error('Export budgets: route /rapports/budgets indisponible.')),
+  prestataires: () => Promise.reject(new Error('Export prestataires: route /rapports/prestataires indisponible. Utilisez prestatairesExcel.')),
+  auditLogs: () => Promise.reject(new Error('Export audit logs: route /rapports/audit-logs indisponible.')),
   missionsExcel: (params) =>
     api.get('/export/missions/excel', { params, responseType: 'blob' }),
   missionsPdf: (params) =>
@@ -317,15 +316,10 @@ export const rapportsAPI = {
 // ── Bons de commande ──────────────────
 // TODO: les routes /api/bons-commande et /api/missions/{id}/generer-bon ne sont pas définies dans api.php — utiliser missionsAPI.bonsCommande(missionId) si besoin
 export const bonCommandeAPI = {
-  list:    (params) =>
-    api.get('/bons-commande', { params }),
-  get:     (id) =>
-    api.get(`/bons-commande/${id}`),
-  generer: (missionId) =>
-    api.post(`/missions/${missionId}/generer-bon`),
-  telecharger: (id) =>
-    api.get(`/bons-commande/${id}/telecharger`, {
-      responseType: 'blob' }),
+  list:    () => Promise.reject(new Error('Bons de commande: route /bons-commande indisponible. Utilisez missionsAPI.bonsCommande(missionId).')),
+  get:     () => Promise.reject(new Error('Bons de commande: route /bons-commande/{id} indisponible.')),
+  generer: () => Promise.reject(new Error('Bons de commande: route /missions/{id}/generer-bon indisponible.')),
+  telecharger: () => Promise.reject(new Error('Bons de commande: téléchargement indisponible via cette API.')),
 }
 
 // ── Recherche ─────────────────────────
